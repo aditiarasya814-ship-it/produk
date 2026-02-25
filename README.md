@@ -12,7 +12,10 @@ Aplikasi manajemen produk yang terintegrasi dengan database MySQL melalui REST A
 
 | Halaman Utama | Form Tambah Produk | Detail Produk |
 | :---: | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/7e4ae4f8-7360-4462-af8c-dc979267ed10" width="250"> | <img src="https://github.com/user-attachments/assets/00e99d25-c0da-4009-b19d-0df05327747c" width="250"> | <img src="https://github.com/user-attachments/assets/9c9d30de-cf45-46c7-8ebd-d8a9743d8ca5" width="250"> |
+| <img width="1919" height="1026" alt="Screenshot 2026-02-25 203146" src="https://github.com/user-attachments/assets/64c371c0-0ca1-498c-85f2-78421885b648" />
+ |<img width="1919" height="1037" alt="Screenshot 2026-02-25 203215" src="https://github.com/user-attachments/assets/74f664f2-1d8d-4f52-8a0e-9e3c3cfc7ab2" />
+ |<img width="1919" height="1028" alt="Screenshot 2026-02-25 203204" src="https://github.com/user-attachments/assets/34889b9c-31d1-4df4-9047-8085d88f02ba" />
+|
 
 ---
 
