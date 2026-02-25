@@ -36,7 +36,6 @@ class _ProdukFormState extends State<ProdukForm> {
   }
 
   Future<bool> simpanProduk() async {
-    // Pastikan URL berganti saat edit
     String url = (widget.produk == null) ? BaseUrl.tambah : BaseUrl.edit;
     
     try {
@@ -52,7 +51,7 @@ class _ProdukFormState extends State<ProdukForm> {
           "kategori": _kategoriController.text,
           "deskripsi": _deskripsiController.text,
         }),
-      ).timeout(const Duration(seconds: 10)); // Tambahkan timeout untuk keamanan
+      ).timeout(const Duration(seconds: 10));
 
       return response.statusCode == 200;
     } catch (e) {
@@ -61,7 +60,7 @@ class _ProdukFormState extends State<ProdukForm> {
     }
   }
 
-  // Widget Helper dengan UI lebih halus
+  // Helper Widget untuk TextField yang lebih modern
   Widget _buildTextField(
     TextEditingController controller,
     String label,
@@ -70,28 +69,45 @@ class _ProdukFormState extends State<ProdukForm> {
     int maxLines = 1,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: TextField(
-        controller: controller,
-        keyboardType: type,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.blueGrey, fontSize: 14),
-          prefixIcon: Icon(icon, color: Colors.blueAccent, size: 22),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF34495E),
+              fontSize: 14,
+            ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+          const SizedBox(height: 8),
+          TextField(
+            controller: controller,
+            keyboardType: type,
+            maxLines: maxLines,
+            decoration: InputDecoration(
+              prefixIcon: Icon(icon, color: Colors.indigo[800], size: 20),
+              hintText: "Masukkan $label",
+              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade200),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade200),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.orangeAccent, width: 2),
+              ),
+              contentPadding: const EdgeInsets.all(16),
+            ),
           ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
+        ],
       ),
     );
   }
@@ -99,88 +115,100 @@ class _ProdukFormState extends State<ProdukForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: Text(
-          widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
-          style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          widget.produk == null ? 'New Product' : 'Update Product',
+          style: const TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo[800],
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            Center(
-              child: Container(
-                height: 160,
-                width: 160,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    )
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: _gambarController.text.isNotEmpty
-                      ? Image.network(
-                          _gambarController.text,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 60, color: Colors.grey),
+            // Header Section untuk Preview Gambar
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 30),
+              decoration: BoxDecoration(
+                color: Colors.indigo[800],
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    height: 140,
+                    width: 140,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
                         )
-                      : Icon(Icons.add_a_photo_rounded, size: 60, color: Colors.blueGrey[200]),
-                ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: _gambarController.text.isNotEmpty
+                          ? Image.network(
+                              _gambarController.text,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                            )
+                          : Icon(Icons.add_photo_alternate_rounded, size: 50, color: Colors.indigo[100]),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Product Preview",
+                    style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500),
+                  )
+                ],
               ),
             ),
             
             Padding(
-              padding: const EdgeInsets.all(25.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  _buildTextField(_kodeController, "Kode Produk", Icons.qr_code_scanner),
-                  _buildTextField(_namaController, "Nama Produk", Icons.shopping_bag_outlined),
+                  _buildTextField(_kodeController, "Product Code", Icons.qr_code_2_rounded),
+                  _buildTextField(_namaController, "Product Name", Icons.edit_note_rounded),
                   _buildTextField(
                     _hargaController, 
-                    "Harga (Rupiah)", 
-                    Icons.monetization_on_outlined,
+                    "Price", 
+                    Icons.payments_rounded,
                     type: TextInputType.number,
                   ),
-                  _buildTextField(_gambarController, "Link URL Gambar", Icons.link_rounded),
-                  _buildTextField(_kategoriController, "Kategori", Icons.grid_view_rounded),
+                  _buildTextField(_gambarController, "Image URL", Icons.link_rounded),
+                  _buildTextField(_kategoriController, "Category", Icons.category_rounded),
                   _buildTextField(
                     _deskripsiController, 
-                    "Deskripsi Lengkap", 
-                    Icons.notes_rounded,
-                    maxLines: 4,
+                    "Description", 
+                    Icons.description_rounded,
+                    maxLines: 3,
                   ),
                   
                   const SizedBox(height: 10),
                   
-                  // Tombol Simpan
+                  // Tombol Simpan yang lebih elegan
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: Colors.orangeAccent[700],
                         foregroundColor: Colors.white,
-                        elevation: 4,
-                        shadowColor: Colors.blueAccent.withValues(alpha: 0.4),
+                        elevation: 5,
+                        shadowColor: Colors.orangeAccent.withOpacity(0.4),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       onPressed: () async {
@@ -189,24 +217,24 @@ class _ProdukFormState extends State<ProdukForm> {
                             _hargaController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Kode, Nama, dan Harga tidak boleh kosong!"),
+                              content: Text("Please fill Code, Name, and Price!"),
                               behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.redAccent,
                             ),
                           );
                           return;
                         }
 
-                        // Menampilkan Loading Dialog
                         showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (context) => const Center(child: CircularProgressIndicator()),
+                          builder: (context) => Center(child: CircularProgressIndicator(color: Colors.indigo[800])),
                         );
 
                         bool sukses = await simpanProduk();
                         
                         if (!mounted) return;
-                        Navigator.pop(context); // Tutup Loading
+                        Navigator.pop(context);
 
                         if (sukses) {
                           Navigator.pushAndRemoveUntil(
@@ -217,7 +245,7 @@ class _ProdukFormState extends State<ProdukForm> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Gagal menyimpan data. Periksa koneksi atau database."),
+                              content: Text("Failed to save. Check connection or database."),
                               backgroundColor: Colors.redAccent,
                               behavior: SnackBarBehavior.floating,
                             ),
@@ -225,8 +253,8 @@ class _ProdukFormState extends State<ProdukForm> {
                         }
                       },
                       child: Text(
-                        widget.produk == null ? "SIMPAN DATA BARU" : "SIMPAN PERUBAHAN",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        widget.produk == null ? "CREATE PRODUCT" : "UPDATE PRODUCT",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.2),
                       ),
                     ),
                   ),

@@ -33,13 +33,19 @@ class _ProdukDetailState extends State<ProdukDetail> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        title: const Text("Konfirmasi"),
-        content: const Text("Yakin ingin menghapus produk ini?"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            SizedBox(width: 10),
+            Text("Hapus Produk"),
+          ],
+        ),
+        content: const Text("Apakah Anda yakin ingin menghapus produk ini secara permanen?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Batal", style: TextStyle(color: Colors.grey)),
+            child: Text("BATAL", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -52,8 +58,11 @@ class _ProdukDetailState extends State<ProdukDetail> {
                 );
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-            child: const Text("Hapus", style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red[700],
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text("HAPUS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -63,218 +72,165 @@ class _ProdukDetailState extends State<ProdukDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Background lebih bersih
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: const Text(
-          'Detail Produk',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text('Product Detail', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1)),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo[800],
         foregroundColor: Colors.white,
         elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 30),
-            // GAMBAR PRODUK (Dengan Frame yang lebih halus)
-            Center(
-              child: Container(
-                width: 220,
-                height: 220,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0), // Efek bingkai putih
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child:
-                        widget.produk?.urlGambar != null &&
-                            widget.produk?.urlGambar != ""
-                        ? Image.network(
-                            widget.produk!.urlGambar!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(
-                                  Icons.broken_image,
-                                  size: 80,
-                                  color: Colors.grey,
-                                ),
-                          )
-                        : const Icon(Icons.image, size: 80, color: Colors.grey),
+            // Header Image Section
+            Stack(
+              children: [
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.indigo[800],
+                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(40)),
                   ),
                 ),
-              ),
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    width: 250,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Hero(
+                        tag: 'img-${widget.produk?.kode}',
+                        child: widget.produk?.urlGambar != null && widget.produk?.urlGambar != ""
+                            ? Image.network(widget.produk!.urlGambar!, fit: BoxFit.cover)
+                            : Icon(Icons.inventory_2_outlined, size: 100, color: Colors.indigo[50]),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${widget.produk?.nama}",
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    Produk.formatRupiah(widget.produk?.harga ?? 0),
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.green,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // BOX KATEGORI
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 15,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[50],
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.orange[200]!),
-                    ),
-                    child: Text(
-                      widget.produk?.kategori ?? "Tanpa Kategori",
-                      style: TextStyle(
-                        color: Colors.orange[900],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Deskripsi",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.produk?.deskripsi ??
-                          "Tidak ada deskripsi untuk produk ini.",
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Card untuk Info Kode
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  // Nama & Harga
+                  Center(
+                    child: Column(
                       children: [
-                        const Icon(
-                          Icons.qr_code,
-                          color: Colors.blueAccent,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 10),
                         Text(
-                          "SKU: ${widget.produk?.kode}",
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          "${widget.produk?.nama}".toUpperCase(),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF2D3436), letterSpacing: 1),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          Produk.formatRupiah(widget.produk?.harga ?? 0),
+                          style: TextStyle(fontSize: 22, color: Colors.green[700], fontWeight: FontWeight.w800),
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 30),
+                  const Divider(),
+                  const SizedBox(height: 20),
 
-                  // TOMBOL AKSI (Warna yang lebih soft)
+                  // Info Grid (Kategori & SKU)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildInfoTile(Icons.category_rounded, "Category", widget.produk?.kategori ?? "-"),
+                      _buildInfoTile(Icons.qr_code_2_rounded, "SKU Code", widget.produk?.kode ?? "-"),
+                    ],
+                  ),
+
+                  const SizedBox(height: 30),
+                  const Text(
+                    "Description",
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: Color(0xFF2D3436)),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.produk?.deskripsi ?? "No description available for this item.",
+                    style: const TextStyle(color: Colors.black54, height: 1.6, fontSize: 15),
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // Bottom Buttons
                   Row(
                     children: [
                       Expanded(
-                        child: OutlinedButton.icon(
+                        child: ElevatedButton.icon(
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProdukForm(produk: widget.produk),
-                              ),
+                              MaterialPageRoute(builder: (context) => ProdukForm(produk: widget.produk)),
                             );
                           },
-                          icon: const Icon(Icons.edit_note),
-                          label: const Text("EDIT"),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.amber[800],
-                            side: BorderSide(color: Colors.amber[800]!),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                          icon: const Icon(Icons.edit_rounded, size: 18),
+                          label: const Text("EDIT PRODUCT"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.indigo[800],
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                           ),
                         ),
                       ),
                       const SizedBox(width: 15),
-                      Expanded(
-                        child: ElevatedButton.icon(
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
                           onPressed: () => konfirmasiHapus(),
-                          icon: const Icon(Icons.delete_outline),
-                          label: const Text("HAPUS"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.red[50], // Background merah sangat muda
-                            foregroundColor: Colors.red[700], // Teks merah tua
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(color: Colors.red[100]!),
-                            ),
-                          ),
+                          icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),
+                          padding: const EdgeInsets.all(16),
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoTile(IconData icon, String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 16, color: Colors.orangeAccent[700]),
+            const SizedBox(width: 5),
+            Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        const SizedBox(height: 5),
+        Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
+      ],
     );
   }
 }
